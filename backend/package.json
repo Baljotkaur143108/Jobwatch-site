@@ -1,0 +1,14 @@
+{
+  "name": "jobwatch-alert-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Email and Telegram alert backend for Canada Warehouse Job Watcher.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
