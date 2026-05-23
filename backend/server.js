@@ -11,26 +11,18 @@ loadEnvFile();
 
 function loadEnvFile() {
   const envPath = path.join(__dirname, ".env");
-  if (!fs.existsSync(envPath)) {
-    return;
-  }
+  if (!fs.existsSync(envPath)) return;
 
   for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) {
-      continue;
-    }
+    if (!trimmed || trimmed.startsWith("#")) continue;
 
     const equalsIndex = trimmed.indexOf("=");
-    if (equalsIndex < 0) {
-      continue;
-    }
+    if (equalsIndex < 0) continue;
 
     const key = trimmed.slice(0, equalsIndex).trim();
     const value = trimmed.slice(equalsIndex + 1).trim().replace(/^["']|["']$/g, "");
-    if (key && process.env[key] === undefined) {
-      process.env[key] = value;
-    }
+    if (key && process.env[key] === undefined) process.env[key] = value;
   }
 }
 
@@ -42,6 +34,42 @@ function jsonResponse(response, statusCode, body) {
     "access-control-allow-headers": "content-type, x-alert-secret",
   });
   response.end(JSON.stringify(body));
+}
+
+function htmlResponse(response, statusCode, html) {
+  response.writeHead(statusCode, {
+    "content-type": "text/html; charset=utf-8",
+    "cache-control": "public, max-age=300",
+  });
+  response.end(html);
+}
+
+function safeHttpUrl(value, fallback = "") {
+  const url = String(value || "").trim();
+  return /^https?:\/\//i.test(url) ? url : fallback;
+}
+
+function renderLandingPage() {
+  const landingPath = path.join(__dirname, "landing.html");
+  const checkoutUrl = safeHttpUrl(process.env.STRIPE_CHECKOUT_URL, "https://buy.stripe.com/fZu00j4As2VK3aK3oQ2wU00");
+  const storeUrl = safeHttpUrl(process.env.CHROME_WEB_STORE_URL);
+  const privacyUrl = safeHttpUrl(
+    process.env.PRIVACY_POLICY_URL,
+    "https://github.com/Baljotkaur143108/Jobwatch-site/blob/main/PRIVACY.md",
+  );
+  const installHref = storeUrl || "#install";
+  const installLabel = storeUrl ? "Add to Chrome" : "Chrome Web Store review pending";
+  const installNote = storeUrl
+    ? "Install from Chrome Web Store, then enter your Stripe billing email inside the extension."
+    : "Chrome Web Store listing is being reviewed. This button will be updated as soon as the extension is approved.";
+
+  return fs.readFileSync(landingPath, "utf8")
+    .replaceAll("__CHECKOUT_URL__", checkoutUrl)
+    .replaceAll("__STORE_URL__", storeUrl)
+    .replaceAll("__PRIVACY_URL__", privacyUrl)
+    .replaceAll("__INSTALL_HREF__", installHref)
+    .replaceAll("__INSTALL_LABEL__", installLabel)
+    .replaceAll("__INSTALL_NOTE__", installNote);
 }
 
 function readJsonBody(request) {
@@ -127,7 +155,7 @@ function buildAlertText(payload) {
   }
 
   if (payload.matches.length > 10) {
-    lines.push(``, `Plus ${payload.matches.length - 10} more match${payload.matches.length - 10 === 1 ? "" : "es"}.`);
+    lines.push("", `Plus ${payload.matches.length - 10} more match${payload.matches.length - 10 === 1 ? "" : "es"}.`);
   }
 
   return lines.join("\n");
@@ -175,15 +203,11 @@ function buildAlertHtml(payload) {
 }
 
 async function sendEmail(payload) {
-  if (!payload.email) {
-    return { skipped: true, reason: "missing_email" };
-  }
+  if (!payload.email) return { skipped: true, reason: "missing_email" };
 
   const apiKey = process.env.SENDGRID_API_KEY;
   const fromEmail = process.env.ALERT_FROM_EMAIL;
-  if (!apiKey || !fromEmail) {
-    return { skipped: true, reason: "sendgrid_not_configured" };
-  }
+  if (!apiKey || !fromEmail) return { skipped: true, reason: "sendgrid_not_configured" };
 
   const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
     method: "POST",
@@ -205,22 +229,15 @@ async function sendEmail(payload) {
     }),
   });
 
-  if (!response.ok) {
-    throw new Error(`SendGrid failed with ${response.status}: ${await response.text()}`);
-  }
-
+  if (!response.ok) throw new Error(`SendGrid failed with ${response.status}: ${await response.text()}`);
   return { sent: true };
 }
 
 async function sendTelegram(payload) {
-  if (!payload.telegramChatId) {
-    return { skipped: true, reason: "missing_telegram_chat_id" };
-  }
+  if (!payload.telegramChatId) return { skipped: true, reason: "missing_telegram_chat_id" };
 
   const token = process.env.TELEGRAM_BOT_TOKEN;
-  if (!token) {
-    return { skipped: true, reason: "telegram_not_configured" };
-  }
+  if (!token) return { skipped: true, reason: "telegram_not_configured" };
 
   const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
@@ -232,13 +249,9 @@ async function sendTelegram(payload) {
     }),
   });
 
-  if (!response.ok) {
-    throw new Error(`Telegram failed with ${response.status}: ${await response.text()}`);
-  }
-
+  if (!response.ok) throw new Error(`Telegram failed with ${response.status}: ${await response.text()}`);
   return { sent: true };
 }
-
 
 function getStripeSecretKey() {
   return process.env.STRIPE_SECRET_KEY || "";
@@ -281,9 +294,7 @@ function normalizeEmail(value) {
 
 async function findStripeCustomerByEmail(email) {
   const cleanEmail = normalizeEmail(email);
-  if (!cleanEmail) {
-    return null;
-  }
+  if (!cleanEmail) return null;
 
   const escapedEmail = cleanEmail.replace(/'/g, "\\'");
   const result = await stripeRequest(`/customers/search?${formEncode({ query: `email:'${escapedEmail}'`, limit: "1" })}`);
@@ -291,9 +302,7 @@ async function findStripeCustomerByEmail(email) {
 }
 
 async function getActiveSubscription(customerId) {
-  if (!customerId) {
-    return null;
-  }
+  if (!customerId) return null;
 
   const result = await stripeRequest(`/subscriptions?${formEncode({ customer: customerId, status: "all", limit: "10" })}`);
   const subscriptions = Array.isArray(result.data) ? result.data : [];
@@ -302,9 +311,7 @@ async function getActiveSubscription(customerId) {
 
 async function lookupSubscriptionByEmail(email) {
   const customer = await findStripeCustomerByEmail(email);
-  if (!customer) {
-    return { active: false, status: "inactive", message: "No Stripe customer found for that email." };
-  }
+  if (!customer) return { active: false, status: "inactive", message: "No Stripe customer found for that email." };
 
   const subscription = await getActiveSubscription(customer.id);
   if (!subscription) {
@@ -362,6 +369,7 @@ async function handleBillingPortal(request, response) {
 
   jsonResponse(response, 200, { ok: true, url: session.url });
 }
+
 async function handleNotify(request, response) {
   const sharedSecret = process.env.ALERT_SHARED_SECRET;
   if (sharedSecret && request.headers["x-alert-secret"] !== sharedSecret) {
@@ -407,6 +415,11 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    if (request.method === "GET" && (request.url === "/" || request.url === "/index.html")) {
+      htmlResponse(response, 200, renderLandingPage());
+      return;
+    }
+
     if (request.method === "GET" && request.url === "/health") {
       jsonResponse(response, 200, { ok: true });
       return;
@@ -429,7 +442,7 @@ const server = http.createServer(async (request, response) => {
 
     jsonResponse(response, 404, { ok: false, error: "Not found" });
   } catch (error) {
-    jsonResponse(response, 500, { ok: false, error: error.message || "Server error" });
+    jsonResponse(response, error.statusCode || 500, { ok: false, error: error.message || "Server error" });
   }
 });
 
