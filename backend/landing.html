@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canada Shift Watcher</title>
+  <meta name="description" content="Canada Shift Watcher helps users monitor supported Canadian warehouse and shift-job employers and prepare matching applications for review.">
+  <style>
+    :root { color-scheme: light; --ink:#102033; --muted:#64748b; --line:#dbe4ee; --green:#0f8f71; --orange:#f97316; --blue:#1455d9; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:#eef4f8; line-height:1.5; }
+    a { color: inherit; }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:20px; max-width:1120px; margin:0 auto; padding:22px 24px; }
+    .brand { display:flex; align-items:center; gap:12px; font-weight:800; font-size:18px; }
+    .mark { width:38px; height:38px; border-radius:10px; display:grid; place-items:center; color:#fff; background:linear-gradient(135deg,var(--green),#13b981); font-weight:900; }
+    .nav-links { display:flex; gap:16px; color:var(--muted); font-size:14px; }
+    .nav-links a { text-decoration:none; }
+    .hero { max-width:1120px; margin:0 auto; padding:34px 24px 48px; display:grid; grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr); gap:44px; align-items:center; }
+    .eyebrow { display:inline-flex; padding:7px 11px; border:1px solid rgba(15,143,113,.22); border-radius:999px; color:#0f766e; background:rgba(20,184,166,.1); font-size:13px; font-weight:700; }
+    h1 { margin:18px 0 16px; font-size:clamp(42px,6vw,76px); line-height:.96; letter-spacing:0; }
+    .lead { max-width:660px; margin:0 0 26px; color:#475569; font-size:19px; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+    .button { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:0 18px; border-radius:8px; border:1px solid transparent; text-decoration:none; font-weight:800; font-size:15px; }
+    .primary { color:#fff; background:var(--blue); }
+    .secondary { color:var(--ink); background:#fff; border-color:var(--line); }
+    .note { margin-top:12px; color:var(--muted); font-size:14px; }
+    .popup { background:rgba(255,255,255,.9); border:1px solid rgba(148,163,184,.28); border-radius:22px; box-shadow:0 24px 70px rgba(15,23,42,.16); padding:22px; }
+    .popup-top { border-radius:18px; padding:24px; background:linear-gradient(135deg,#fff7ed,#f0fdfa); border:1px solid #f3e2d0; }
+    .popup-top small { color:var(--orange); font-weight:900; letter-spacing:.15em; }
+    .popup-top h2 { margin:10px 0 8px; font-size:38px; line-height:1; }
+    .popup-top p, .card p { margin:0; color:#60718a; }
+    .panel { margin-top:14px; border:1px solid var(--line); border-radius:16px; background:#fff; padding:18px; }
+    .toggle-row { display:flex; justify-content:space-between; gap:16px; align-items:center; }
+    .switch { width:72px; height:38px; border-radius:999px; background:#6ee7a0; padding:5px; display:flex; justify-content:flex-end; }
+    .knob { width:28px; height:28px; border-radius:50%; background:white; }
+    .chips { display:flex; flex-wrap:wrap; gap:9px; margin-top:14px; }
+    .chip { border:1px solid var(--line); border-radius:999px; padding:8px 12px; background:#f8fafc; font-weight:700; font-size:14px; }
+    .sections { background:#fff; border-top:1px solid var(--line); }
+    .grid { max-width:1120px; margin:0 auto; padding:48px 24px; display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .card { border:1px solid var(--line); border-radius:8px; padding:22px; background:#fff; }
+    .card h3 { margin:0 0 8px; font-size:19px; }
+    .employers { max-width:1120px; margin:0 auto; padding:0 24px 52px; }
+    .employer-list { display:flex; flex-wrap:wrap; gap:10px; }
+    .footer { border-top:1px solid var(--line); background:#f8fafc; color:#526176; padding:24px; }
+    .footer-inner { max-width:1120px; margin:0 auto; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:14px; }
+    @media (max-width:860px) { .hero { grid-template-columns:1fr; padding-top:18px; } .grid { grid-template-columns:1fr; } .nav { align-items:flex-start; } .nav-links { flex-wrap:wrap; justify-content:flex-end; } }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Main navigation">
+    <div class="brand"><span class="mark">CS</span><span>Canada Shift Watcher</span></div>
+    <div class="nav-links"><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="__PRIVACY_URL__">Privacy</a></div>
+  </nav>
+  <main>
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Chrome extension for Canadian warehouse shifts</span>
+        <h1>Find warehouse shifts faster.</h1>
+        <p class="lead">Canada Shift Watcher monitors supported Canadian warehouse and shift-job employers, alerts users when matching roles appear, and helps prepare application pages for review.</p>
+        <div class="actions" id="install">
+          <a class="button primary" href="__INSTALL_HREF__">__INSTALL_LABEL__</a>
+          <a class="button secondary" href="__CHECKOUT_URL__">Start subscription</a>
+        </div>
+        <p class="note">__INSTALL_NOTE__</p>
+      </div>
+      <aside class="popup" aria-label="Extension preview">
+        <div class="popup-top"><small>SHIFT WATCHER</small><h2>Track Canada jobs</h2><p>Watch supported employers and get browser alerts when matches appear.</p></div>
+        <div class="panel"><div class="toggle-row"><div><strong>Extension Watcher</strong><p class="note" style="margin:3px 0 0">Running in the background</p></div><div class="switch"><span class="knob"></span></div></div></div>
+        <div class="panel"><strong>Preferences</strong><div class="chips"><span class="chip">Amazon</span><span class="chip">Walmart</span><span class="chip">Purolator</span><span class="chip">FedEx</span><span class="chip">Toronto</span><span class="chip">Night shift</span></div></div>
+      </aside>
+    </section>
+    <section class="sections" id="features">
+      <div class="grid">
+        <article class="card"><h3>Match your preferences</h3><p>Choose employers, cities, job types, and shift timing so alerts stay focused.</p></article>
+        <article class="card"><h3>Fast browser alerts</h3><p>Keep the watcher on and receive browser notifications when matching jobs appear.</p></article>
+        <article class="card"><h3>Review before submit</h3><p>Application assist can prepare visible fields and stops so the user reviews before submitting.</p></article>
+      </div>
+      <div class="employers"><h2>Supported employers</h2><div class="employer-list"><span class="chip">Amazon Canada</span><span class="chip">Walmart Canada</span><span class="chip">Purolator</span><span class="chip">FedEx</span><span class="chip">Canada Post</span><span class="chip">Intelcom</span><span class="chip">GoBolt</span><span class="chip">Loblaw</span><span class="chip">Sobeys</span><span class="chip">Sysco</span><span class="chip">Uline</span></div></div>
+    </section>
+    <section class="sections" id="pricing"><div class="grid"><article class="card"><h3>$19 CAD/month</h3><p>Subscription access for the extension. Billing is handled by Stripe and can be managed or cancelled from the extension.</p></article><article class="card"><h3>No job guarantee</h3><p>The extension helps users monitor and prepare faster, but employers control hiring decisions and availability.</p></article><article class="card"><h3>Built for Canada</h3><p>Focused on warehouse, fulfillment, sorting, distribution centre, and package handler opportunities.</p></article></div></section>
+  </main>
+  <footer class="footer"><div class="footer-inner"><span>Canada Shift Watcher</span><span><a href="__PRIVACY_URL__">Privacy Policy</a></span></div></footer>
+</body>
+</html>
